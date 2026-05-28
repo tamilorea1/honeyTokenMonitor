@@ -1,0 +1,9 @@
+# Terraform state
+infra/terraform.tfstate
+infra/terraform.tfstate.backup
+
+# Terraform provider plugins and internals
+infra/.terraform/
+
+# Lock file (optional to commit, but fine to exclude)
+# infra/.terraform.lock.hcl
