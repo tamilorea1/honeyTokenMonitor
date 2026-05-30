@@ -16,9 +16,11 @@ terraform {
     Its a security issue
 */
 provider "aws" {
-  region = "us-east-1"
+  # how to properly call variables for the variables.tf file
+  region = var.aws_region 
 }
 
-resource "aws_s3_bucket" "test" {
-  bucket = "test-bucket-tamilorea"
+resource "aws_iam_user" "test" {
+  # name of our IAM user is 'test_user'
+  name = var.test_user_name 
 }
