@@ -60,4 +60,10 @@ resource "aws_cloudtrail" "honeytoken" {
 
   #cloudtrail need to see the bucket policy before it begins enabling
   depends_on = [ aws_s3_bucket_policy.cloudtrail_logs ]
+
+  #tells cloudtrail where to send events
+  cloud_watch_logs_group_arn = "${aws_cloudwatch_log_group.cloudtrail.arn}:*"
+
+  #tells cloudtrail which role to use when writing
+  cloud_watch_logs_role_arn = aws_iam_role.cloudtrail_cloudwatch.arn
 }
