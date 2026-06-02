@@ -67,8 +67,8 @@ resource "aws_dynamodb_table" "terraform_lock" {
   }
 }
 
-resource "aws_iam_user" "test" {
-  # name of our IAM user is 'test_user'
-  name = var.test_user_name 
-}
+# resource "aws_iam_user" "test" {
+#   # name of our IAM user is 'test_user'
+#   name = var.test_user_name 
+# }
 

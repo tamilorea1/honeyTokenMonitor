@@ -5,8 +5,14 @@ variable "aws_region" {
 
 }
 
-variable "test_user_name" {
-  description = "Name of the practice IAM user"
+variable "honeytoken_username" {
+  description = "name of our decoy  IAM user"
   type = string
-  default = "test_user"
+  default = "svc-backup-operator"
 }
+
+# variable "test_user_name" {
+#   description = "Name of the practice IAM user"
+#   type = string
+#   default = "test_user"
+# }
