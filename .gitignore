@@ -7,3 +7,6 @@ infra/.terraform/
 
 # Lock file (optional to commit, but fine to exclude)
 # infra/.terraform.lock.hcl
+
+#lambda build artifact
+lambda.zip

@@ -69,4 +69,7 @@ resource "aws_cloudwatch_metric_alarm" "honeytoken_usage" {
   #if no data came in don't trigger false alerts
   treat_missing_data = "notBreaching"
   alarm_description = "Honeytoken credentials were used"
+
+  #attaches alarm action from lambda.tf
+  alarm_actions = [ aws_sns_topic.honeytoken_alert.arn ]
 }
