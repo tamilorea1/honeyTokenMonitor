@@ -10,3 +10,6 @@ infra/.terraform/
 
 #lambda build artifact
 lambda.zip
+
+#contains personal email for alerts
+*.tfvars

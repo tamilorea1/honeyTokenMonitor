@@ -62,6 +62,13 @@ resource "aws_lambda_function" "honeytoken_alert" {
   handler = "index.handler"
   runtime = "nodejs20.x"
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+#passes the dynamodb table to lambda
+  environment {
+    variables = {
+      DYNAMODB_TABLE = aws_dynamodb_table.honeytoken_incidents.name
+    }
+  }
 }
 
 #creates lambda permission to allow sns to invoke lambda
@@ -79,5 +86,12 @@ resource "aws_sns_topic_subscription" "lambda" {
   topic_arn = aws_sns_topic.honeytoken_alert.arn
   protocol = "lambda"
   endpoint = aws_lambda_function.honeytoken_alert.arn
+}
+
+#adds an email subscription
+resource "aws_sns_topic_subscription" "email" {
+  topic_arn = aws_sns_topic.honeytoken_alert.arn
+  protocol = "email"
+  endpoint = var.alert_email
 }
 
