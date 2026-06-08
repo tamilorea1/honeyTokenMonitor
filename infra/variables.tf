@@ -11,6 +11,11 @@ variable "honeytoken_username" {
   default = "svc-backup-operator"
 }
 
+variable "alert_email" {
+  description = "Email address to receive honeytoken alerts"
+  type = string
+}
+
 # variable "test_user_name" {
 #   description = "Name of the practice IAM user"
 #   type = string
