@@ -1,4 +1,5 @@
 import { Router, Request, Response } from "express";
+import { logTrapHit } from "../services/dynamodb";
 
 //Creates the mini route handler
 const router = Router()
@@ -9,13 +10,21 @@ const router = Router()
  * It runs on every request
  * Needs next(), else request would hang
  */
-router.use((request: Request, response: Response, next) => {
-    console.log('TRAP HIT:', {
+router.use(async (request: Request, response: Response, next) => {
+    const hit = {
         path: request.path,
-        ip: request.ip,
-        userAgent: request.headers['user-agent'],
+        ip: request.ip || 'unknown',
+        userAgent: request.headers['user-agent'] || 'unknown',
         time: new Date().toISOString()
-    })
+    }
+    console.log('TRAP HIT:', hit)
+
+    try {
+        await logTrapHit(hit)
+        console.log('Logged to DynamoDB')
+    } catch (error) {
+        console.log('DynamoDB write failed:', error)
+    }
     next()
 })
 
