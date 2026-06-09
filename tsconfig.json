@@ -1,0 +1,17 @@
+//tells typescript these below
+/*
+    source lives in src/
+    compiled output goes to dist/
+    use modern es2020 features
+*/
+{
+    "compilerOptions": {
+        "target": "ES2020",
+        "module": "commonjs",
+        "rootDir": "./src",
+        "outDir": "./dist",
+        "strict": true,
+        "esModuleInterop": true
+    },
+    "include": ["src/**/*"]
+}

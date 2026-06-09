@@ -13,3 +13,9 @@ lambda.zip
 
 #contains personal email for alerts
 *.tfvars
+
+# Node.js dependencies — restored with npm install
+node_modules/
+
+# TypeScript compiled output — generated artifact
+dist/
