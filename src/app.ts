@@ -1,5 +1,6 @@
 // Bring in Express — the tool that lets us build a web server
 import express from 'express';
+import trapRouter from "./routes/trap";
 
 // Create the server (think of this like turning on the machine)
 const app = express();
@@ -10,6 +11,9 @@ const PORT = process.env.PORT || 3000;
 
 // Tell the server to understand JSON — so when someone sends data, we can read it
 app.use(express.json());
+
+//all /api/* requests go to trap routes
+app.use('/api', trapRouter)
 
 // When someone visits /health, send back { status: 'ok' }
 // This is just a way to check "is the server alive?"
