@@ -1,3 +1,5 @@
+import 'dotenv/config'
+
 // Bring in Express — the tool that lets us build a web server
 import express from 'express';
 import trapRouter from "./routes/trap";
