@@ -1,0 +1,32 @@
+{
+  "name": "honeytokenmonitor",
+  "version": "1.0.0",
+  "description": "A cloud-native, deception-based intrusion detection system that alerts you the moment a fake credential is accessed — signalling a potential breach in real time. Entire infrastructure deployed with a single `terraform apply`.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "ts-node src/app.ts",
+    "build" : "tsc"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamilorea1/honeyTokenMonitor.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/tamilorea1/honeyTokenMonitor/issues"
+  },
+  "homepage": "https://github.com/tamilorea1/honeyTokenMonitor#readme",
+  "dependencies": {
+    "express": "^5.2.1"
+  },
+  "devDependencies": {
+    "@types/express": "^5.0.6",
+    "@types/node": "^25.9.2",
+    "ts-node": "^10.9.2",
+    "typescript": "^6.0.3"
+  }
+}
