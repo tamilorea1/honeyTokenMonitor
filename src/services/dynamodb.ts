@@ -1,3 +1,7 @@
+/**
+ * The file is a service that knows how to talk to DynamoDB when a trap hit occurs
+ */
+
 import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
 import { randomUUID } from "crypto";
 

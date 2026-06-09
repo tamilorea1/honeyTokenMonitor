@@ -1,3 +1,7 @@
+/**
+ * This file will log the trap hit
+ */
+
 import { Router, Request, Response } from "express";
 import { logTrapHit } from "../services/dynamodb";
 
