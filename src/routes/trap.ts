@@ -4,6 +4,7 @@
 
 import { Router, Request, Response } from "express";
 import { logTrapHit } from "../services/dynamodb";
+import { publishTrapAlert } from "../services/sns";
 
 //Creates the mini route handler
 const router = Router()
@@ -13,6 +14,7 @@ const router = Router()
  * router.use() acts as middleware
  * It runs on every request
  * Needs next(), else request would hang
+ * Every service gets its own try catch so a failure in one doesn't block another
  */
 router.use(async (request: Request, response: Response, next) => {
     const hit = {
@@ -29,6 +31,15 @@ router.use(async (request: Request, response: Response, next) => {
     } catch (error) {
         console.log('DynamoDB write failed:', error)
     }
+
+    try {
+        await publishTrapAlert(hit)
+        console.log('SNS alert sent')
+    } catch (error) {
+        console.log('SNS publish failed:', error)
+    }
+
+
     next()
 })
 
