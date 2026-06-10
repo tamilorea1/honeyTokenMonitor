@@ -1,0 +1,8 @@
+#Exclude these files when building the image
+
+node_modules
+dist
+.env
+infra/.terraform
+lambda.zip
+*.tfvars
