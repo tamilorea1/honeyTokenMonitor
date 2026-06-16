@@ -67,6 +67,7 @@ resource "aws_lambda_function" "honeytoken_alert" {
   environment {
     variables = {
       DYNAMODB_TABLE = aws_dynamodb_table.honeytoken_incidents.name
+      HONEYTOKEN_USERNAME = var.honeytoken_username
     }
   }
 }
@@ -93,5 +94,26 @@ resource "aws_sns_topic_subscription" "email" {
   topic_arn = aws_sns_topic.honeytoken_alert.arn
   protocol = "email"
   endpoint = var.alert_email
+}
+
+#reads/plans the policy to let lambda manage the honeytoken user's access keys
+data "aws_iam_policy_document" "lambda_iam_policy" {
+  statement {
+    effect = "Allow"
+    actions = [ 
+      "iam:ListAccessKeys",
+      "iam:UpdateAccessKey"
+     ]
+     resources = [
+      "arn:aws:iam::${data.aws_caller_identity.current.account_id}:user/${var.honeytoken_username}"
+     ]
+  }
+}
+
+#attaches the policy to the lambda execution role
+resource "aws_iam_role_policy" "lambda_iam" {
+  name = "lambda_iam_policy"
+  policy = data.aws_iam_policy_document.lambda_iam_policy.json
+  role = aws_iam_role.lambda_exec.id
 }
 
