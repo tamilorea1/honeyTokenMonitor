@@ -2,8 +2,6 @@
 
 A cloud-native, deception-based intrusion detection system that alerts you the moment a fake credential is accessed — signalling a potential breach in real time. Entire infrastructure deployed with a single `terraform apply`.
 
-Note: It is a serverless architecture that runs only when executed, rather than needing a persistent server
-
 ---
 
 ## 🧠 What Is This Project?
