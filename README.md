@@ -64,131 +64,39 @@ DynamoDB logs the full attempt (Key ID, IP, timestamp, region, etc.)
 
 ---
 
-## 💰 Cost Breakdown
-
-| Service | Free? | Notes |
-|---|---|---|
-| Node.js / TypeScript / Express | ✅ Free | Open source |
-| AWS IAM | ✅ Free | No cost for users or access keys |
-| AWS CloudTrail | ✅ Free tier | One trail free per region |
-| AWS CloudWatch | ✅ Free tier | Basic monitoring and alarms included |
-| AWS Lambda | ✅ Free tier | 1M requests/month |
-| AWS SNS | ✅ Free tier | 1,000 email notifications/month |
-| AWS DynamoDB | ✅ Free tier | 25GB storage, 25 read/write capacity units |
-| Terraform | ✅ Free | Open source CLI |
-| Docker | ✅ Free | Docker Desktop free for personal use |
-
-**Total estimated monthly cost: $0.00**
-
-> Swapping MongoDB for DynamoDB removes the one external dependency — everything lives natively in AWS.
-
----
-
 ## 🏗️ Build Phases
 
 ### Phase 0 — Infrastructure as Code (Terraform)
 
 Define and provision your entire AWS stack before writing a single line of app code:
 
-- [ ] Install Terraform CLI
-- [ ] Write `main.tf` to provision: IAM decoy user + access key, CloudTrail trail, CloudWatch log group + alarm, Lambda function, SNS topic + email subscription, DynamoDB table
-- [ ] Run `terraform apply` — entire security stack spins up in one command
-- [ ] Store Terraform state remotely in an S3 backend (optional but good practice)
+- [x] Install Terraform CLI
+- [x] Write `main.tf` to provision: IAM decoy user + access key, CloudTrail trail, CloudWatch log group + alarm, Lambda function, SNS topic + email subscription, DynamoDB table
+- [x] Run `terraform apply` — entire security stack spins up in one command
+- [x] Store Terraform state remotely in an S3 backend
 
 ### Phase 1 — Signal (Detection Only)
 
 Build the core detection pipeline end to end:
 
-- [ ] Set up Node.js + TypeScript + Express project
-- [ ] Create decoy IAM user via Terraform with an access key and an explicit `Deny *` policy
-- [ ] Enable CloudTrail to capture all API calls in your account
-- [ ] Set up CloudWatch alarm filtering for `UnauthorizedOperation` errors tied to your decoy key's ID
-- [ ] Write Lambda function — triggered by CloudWatch, fires SNS alert
-- [ ] Configure SNS topic — subscribe your email/phone number
-- [ ] Set up DynamoDB table — log every attempt with Key ID, IP, timestamp, AWS region, action attempted
-- [ ] Containerize the Express app with Docker
-- [ ] Test end to end: use the decoy key → confirm CloudTrail logs it → confirm you receive an alert
+- [x] Set up Node.js + TypeScript + Express project
+- [x] Create decoy IAM user via Terraform with an access key and an explicit `Deny *` policy
+- [x] Enable CloudTrail to capture all API calls in your account
+- [x] Set up CloudWatch alarm filtering for `UnauthorizedOperation` errors tied to your decoy key's ID
+- [x] Write Lambda function — triggered by CloudWatch, fires SNS alert
+- [x] Configure SNS topic — subscribe your email/phone number
+- [x] Set up DynamoDB table — log every attempt with Key ID, IP, timestamp, AWS region, action attempted
+- [x] Containerize the Express app with Docker
+- [x] Test end to end: use the decoy key → confirm CloudTrail logs it → confirm you receive an alert
 
 ### Phase 2 — Response (SOAR: Security Orchestration, Automation and Response)
 
 Add automated remediation on top of the detection layer:
 
-- [ ] **Credential rotation** — Lambda automatically deactivates the triggered decoy key and generates a fresh one, cutting off further attempts with the same key
-- [ ] **IP blocking** — update an AWS WAF (Web Application Firewall) rule to blacklist the offending IP address automatically
-- [ ] **Breach report dashboard** — a simple frontend that reads from DynamoDB and displays confirmed breach attempts with metadata, severity tags, and timestamps
-
----
-
-## 🎤 How to Talk About This in Interviews
-
-### If you've only built Phase 1 (signals):
-> *"The project focuses on detection — the philosophy being that fast, reliable alerting gives security teams the information they need to respond appropriately. Automated remediation without human review can sometimes cause more damage than the attack itself."*
-
-### If you've completed Phase 2 (SOAR):
-> *"I implemented automated response using Lambda — when a honeytoken is accessed, the system deactivates the compromised key and blacklists the IP automatically, reducing response time to near zero. This is a lightweight SOAR system — Security Orchestration, Automation and Response."*
-
-### On Terraform specifically:
-> *"I provisioned the entire security stack — IAM roles, CloudTrail, CloudWatch alarms, Lambda, SNS, and DynamoDB — with a single `terraform apply`. This means the whole project is reproducible, version-controlled, and deployable in any AWS account in minutes."*
-
-### Key concepts to name-drop:
-- **Honeytoken / Deception-based detection** — you think like an attacker, not just a developer
-- **Zero legitimate access** — any usage of a honeytoken is by definition malicious
-- **UnauthorizedOperation** — the specific CloudTrail signal this project monitors for
-- **Principle of Least Privilege** — the decoy IAM key has an explicit `Deny *` policy, so it literally cannot do anything even if someone grabs it
-- **SOAR** — automated response, not just alerting
-- **Infrastructure as Code** — entire stack is version-controlled and reproducible
-- **AWS Shared Responsibility Model** — you understand what AWS secures vs. what you're responsible for
-- **Cloud-native architecture** — DynamoDB + Lambda + CloudWatch all scale automatically with zero server management
-
----
-
-## 📁 Suggested Project Structure
-
-```
-honeytoken-monitor/
-├── src/
-│   ├── app.ts                  # Express app entry point
-│   ├── routes/
-│   │   └── trap.ts             # Trap endpoints
-│   └── services/
-│       ├── dynamodb.ts         # DynamoDB logging service
-│       ├── cloudwatch.ts       # CloudWatch interactions
-│       └── sns.ts              # SNS notification logic
-├── lambda/
-│   └── alertHandler.ts         # Lambda function — triggered by CloudWatch
-├── infra/
-│   ├── main.tf                 # Core Terraform config
-│   ├── variables.tf            # Input variables
-│   ├── outputs.tf              # Output values (e.g. SNS ARN, table name)
-│   └── backend.tf              # Remote state config (S3)
-├── docker/
-│   └── Dockerfile
-├── .env.example                # Example env vars (never commit real .env)
-├── package.json
-└── README.md
-```
-
----
-
-## 🔐 Environment Variables
-
-Never commit real credentials. Use a `.env` file locally and AWS environment variables in production.
-
-```env
-# AWS
-AWS_REGION=us-east-1
-AWS_ACCESS_KEY_ID=your_access_key
-AWS_SECRET_ACCESS_KEY=your_secret_key
-
-# DynamoDB
-DYNAMODB_TABLE_NAME=honeytoken-access-logs
-
-# SNS
-SNS_TOPIC_ARN=arn:aws:sns:us-east-1:...
-
-# App
-PORT=3000
-```
+- [x] **Credential deactivation** — Lambda automatically deactivates the triggered decoy key the moment it's used, cutting off further attempts with the same key. Regeneration is a deliberate manual step, not automated — a honeytoken has no live service depending on it staying active, so a human stays in the loop on resetting the trap.
+- [ ] **IP blocking** — skipped. AWS WAF isn't part of the AWS Free Tier (~$5+/month per web ACL), and credential deactivation already neutralizes the compromised key, so this was deprioritized in favor of staying cost-free.
+- [x] **Breach report dashboard** — a simple frontend served by Express that reads from DynamoDB and displays every confirmed incident (IAM honeytoken triggers and HTTP trap hits) with metadata and timestamps.
+- [x] **HTTP trap layer** — Express endpoints (`/api/admin`, `/api/keys`, `/api/config`) that look like real internal services. Any hit logs to DynamoDB and fires an SNS alert, the same pipeline as the IAM honeytoken.
 
 ---
 
@@ -205,7 +113,7 @@ PORT=3000
 | Serverless-native storage | DynamoDB for breach attempt logs |
 | Containerization | Docker |
 | Infrastructure as Code | Terraform — entire stack deployed in one command |
-| SOAR (Phase 2) | Automated key deactivation + IP blocking |
+| SOAR (Phase 2) | Automated key deactivation + breach dashboard |
 | Principle of Least Privilege | Decoy key has zero effective permissions |
 
 ---
