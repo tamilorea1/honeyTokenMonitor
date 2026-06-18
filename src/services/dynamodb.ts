@@ -2,7 +2,8 @@
  * The file is a service that knows how to talk to DynamoDB when a trap hit occurs
  */
 
-import { DynamoDBClient, PutItemCommand } from "@aws-sdk/client-dynamodb";
+import { DynamoDBClient, PutItemCommand, ScanCommand } from "@aws-sdk/client-dynamodb";
+import { unmarshall } from "@aws-sdk/util-dynamodb";
 import { randomUUID } from "crypto";
 
 //Connect to DynamoDB in the configure region
@@ -30,4 +31,14 @@ export async function logTrapHit(hit:TrapHit): Promise<void> {
             time: {S: hit.time}
         }
     }))
+}
+
+// Reads every incident currently stored in the table
+export async function getAllIncidents(): Promise<Record<string, any>[]> {
+    const {Items} = await dynamo.send(new ScanCommand({
+        TableName: process.env.DYNAMODB_TABLE!
+    }))
+
+    // Convert DynamoDB's typed format ({ S: "value" }) into plain objects
+    return (Items || []).map(item => unmarshall(item))
 }
