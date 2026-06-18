@@ -1,4 +1,5 @@
-import 'dotenv/config'
+import 'dotenv/config';
+import path from 'path';
 
 // Bring in Express — the tool that lets us build a web server
 import express from 'express';
@@ -14,6 +15,9 @@ const PORT = process.env.PORT || 3000;
 
 // Tell the server to understand JSON — so when someone sends data, we can read it
 app.use(express.json());
+
+// Serve the dashboard's static files (index.html, dashboard.js)
+app.use(express.static(path.join(__dirname, '../public')));
 
 //all /api/* requests go to trap routes
 app.use('/api', trapRouter)

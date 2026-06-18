@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Honeytoken Monitor — Incident Dashboard</title>
+    <style>
+        body { font-family: sans-serif; background: #111; color: #eee; padding: 2rem; }
+        h1 { color: #f5a623; }
+        table { width: 100%; border-collapse: collapse; margin-top: 1rem; }
+        th, td { padding: 0.6rem; border-bottom: 1px solid #333; text-align: left; }
+        th { background: #1c1c1c; }
+        tr:hover { background: #1a1a1a; }
+    </style>
+</head>
+<body>
+    <h1>Honeytoken Incident Dashboard</h1>
+    <table id="incidents-table">
+        <thead>
+            <tr>
+                <th>Incident ID</th>
+                <th>Source</th>
+                <th>Detail</th>
+                <th>IP</th>
+                <th>Time</th>
+            </tr>
+        </thead>
+        <tbody id="incidents-body"></tbody>
+    </table>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
