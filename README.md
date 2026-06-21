@@ -100,6 +100,51 @@ Add automated remediation on top of the detection layer:
 
 ---
 
+## 🧪 Testing the Honeytoken
+
+Once deployed, here's how to trigger it and confirm the full pipeline fires.
+
+### Trigger the IAM honeytoken
+
+1. Get the decoy credentials from Terraform output:
+   ```bash
+   cd infra
+   terraform output honeytoken_access_key_id
+   terraform output -raw honeytoken_access_key
+   ```
+2. In a separate terminal, use those credentials for a single command (don't overwrite your real AWS credentials):
+   ```bash
+   export AWS_ACCESS_KEY_ID="<honeytoken_access_key_id>"
+   export AWS_SECRET_ACCESS_KEY="<honeytoken_access_key>"
+   aws sts get-caller-identity
+   ```
+   This will return the decoy identity successfully (`sts:GetCallerIdentity` always succeeds with valid credentials, regardless of permissions) — the response itself isn't the trigger, the CloudTrail log entry is.
+3. Clear the temporary credentials from that terminal:
+   ```bash
+   unset AWS_ACCESS_KEY_ID
+   unset AWS_SECRET_ACCESS_KEY
+   ```
+4. Wait 1–2 minutes, then confirm:
+   - **CloudWatch** → alarm state changes to "In Alarm"
+   - **IAM console** → the decoy user's access key flips to `Inactive` (Phase 2 auto-deactivation)
+   - **DynamoDB** → new row in `honeytoken-incidents`
+   - **Email** → alert from SNS
+   - **Dashboard** (`npm start`, visit `http://localhost:3000`) → new incident appears
+
+To test again, manually reactivate the key in the IAM console first (Security credentials tab → Activate) — Lambda will deactivate it again automatically next time it's triggered.
+
+### Trigger an HTTP trap
+
+```bash
+curl http://localhost:3000/api/admin
+curl http://localhost:3000/api/keys
+curl http://localhost:3000/api/config
+```
+
+Each hit logs to DynamoDB, fires an SNS alert, and appears on the dashboard — no AWS credentials needed for this path, just a request to the running app.
+
+---
+
 ## 📚 Concepts This Project Demonstrates
 
 | Concept | Where it appears |
