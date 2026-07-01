@@ -143,23 +143,6 @@ curl http://localhost:3000/api/config
 
 Each hit logs to DynamoDB, fires an SNS alert, and appears on the dashboard — no AWS credentials needed for this path, just a request to the running app.
 
----
-
-## 📚 Concepts This Project Demonstrates
-
-| Concept | Where it appears |
-|---|---|
-| Deception-based security | Decoy IAM user honeytoken design |
-| AWS Identity Management | IAM user, access key, explicit Deny policy |
-| Audit logging | AWS CloudTrail capturing all API calls |
-| Threat detection | CloudWatch alarm on `UnauthorizedOperation` |
-| Serverless architecture | AWS Lambda |
-| Event-driven design | CloudTrail → CloudWatch → Lambda → SNS pipeline |
-| Serverless-native storage | DynamoDB for breach attempt logs |
-| Containerization | Docker |
-| Infrastructure as Code | Terraform — entire stack deployed in one command |
-| SOAR (Phase 2) | Automated key deactivation + breach dashboard |
-| Principle of Least Privilege | Decoy key has zero effective permissions |
 
 ---
 
